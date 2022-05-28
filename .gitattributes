@@ -1,0 +1,59 @@
+## AUTO-DETECT
+##   Handle line endings automatically for files detected as
+##   text and leave all files detected as binary untouched.
+##   This will handle all files NOT defined below.
+* text=auto eol=lf
+
+## SOURCE CODE
+*.bat      text eol=crlf
+*.css      text
+*.htm      text
+*.html     text
+*.js       text
+*.json     text
+*.jsx      text
+*.ts       text
+*.tsx      text
+
+## DOCUMENTATION
+*.md         text
+*.txt        text
+AUTHORS      text
+CHANGELOG    text
+CHANGES      text
+CONTRIBUTING text
+COPYING      text
+COPYRIGHT    text
+INSTALL      text
+LICENSE      text
+README       text
+TODO         text
+
+## LINTERS
+.eslintrc     text
+
+## CONFIGS
+*.conf         text
+*.config       text
+.editorconfig  text
+.gitattributes text
+.gitconfig     text
+.gitignore     text
+*.npmignore    text
+
+## GRAPHICS
+*.bmp  binary
+*.gif  binary
+*.ico  binary
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.svg  text
+*.svgz binary
+
+## FONTS
+*.ttf   binary
+*.eot   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
