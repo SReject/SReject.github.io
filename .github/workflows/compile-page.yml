@@ -51,6 +51,7 @@ jobs:
           git restore .
           git fetch
           git checkout master
+          rm -rf ./${{ steps,getdir.outputs.dirname }}
           git stash pop
           git add .
           git commit -m 'Changes from #$GITHUB_SHA'
