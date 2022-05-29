@@ -53,6 +53,8 @@ jobs:
       - name: 'Commit built page to master branch'
         run: |
           cd master
+          git config --global user.name "SReject"
+          git config --global user.email 'SReject@users.noreply.github.com'
           git add --all
           git commit -m 'Changes from #$GITHUB_SHA'
           git push origin master
