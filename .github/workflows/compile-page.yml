@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - 'page/**'
-    branches_ignore:
-      - 'page/**/*'
 
 jobs:
   compile:
@@ -20,7 +18,7 @@ jobs:
       - name: 'Get directory name of page'
         id: 'getpagedir'
         run: |
-          id=$(echo ${{GETHUB_REF##*/}} | cut -d/ -f2)
+          id=$(echo $GETHUB_REF_NAME | cut -d/ -f2)
           echo "::set-output name=dirname::$id"
 
       - name: 'Create directory for master branch'
