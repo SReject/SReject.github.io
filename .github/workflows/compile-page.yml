@@ -46,7 +46,7 @@ jobs:
       - name: 'Build script exists: run build script and then copy files from /build to page directory'
         if: steps.has_build_script.outputs.files_exists == 'true'
         run: |
-          mkdir ./build
+          chmod u+x ./build.sh
           ./build.sh
           cp -r ./build ./master/${{ steps.getpagedir.outputs.dirname }}
 
