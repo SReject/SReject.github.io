@@ -31,24 +31,24 @@ jobs:
           path: 'master'
 
       - name: 'Create page directory in master branch'
-        run: mkdir $GITHUB_WORKSPACE/master/${{ steps.getpagedir.outputs.dirname }}
+        run: mkdir ./master/${{ steps.getpagedir.outputs.dirname }}
 
       - name: 'Check if there is a build script'
         id: 'has_build_script'
         uses: 'andstor/file-existence-action@v1'
         with:
-          files: '$GITHUB_WORKSPACE/build.bat'
+          files: 'build.bat'
 
       - name: 'Build script does not exist: Copy files from /src to page directory'
         if: steps.has_build_script.outputs.files_exists != 'true'
-        run: cp -r $GITHUB_WORKSPACE/src $GITHUB_WORKSPACE/master/${{ steps.getpagedir.outputs.dirname }}
+        run: cp -r ./src ./master/${{ steps.getpagedir.outputs.dirname }}
 
       - name: 'Build script exists: run build script and then copy files from /build to page directory'
         if: steps.has_build_script.outputs.files_exists == 'true'
         run: |
-          mkdir $GITHUB_WORKSPACE/build
-          $GITHUB_WORKSPACE/build.bat
-          cp -r $GETHUB_WORKSPACE/build $GETHUB_WORKSPACE/master/${{ steps.getpagedir.outputs.dirname }}
+          mkdir ./build
+          build.bat
+          cp -r ./build ./master/${{ steps.getpagedir.outputs.dirname }}
 
       - name: 'Commit built page to master branch'
         run: |
