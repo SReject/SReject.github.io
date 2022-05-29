@@ -20,35 +20,29 @@ jobs:
           id=$(echo $GITHUB_REF_NAME | cut -d/ -f2)
           echo "::set-output name=dirname::$id"
 
-      - name: Clone master branch
-        run: |
-          git clone https://github.com/SReject/SReject.github.io.git ./master
-          mkdir ./master/${{ steps.getdir.outputs.dirname }}
-
       - name: 'Check if there is a build script'
         id: 'has_build_script'
         uses: 'andstor/file-existence-action@v1'
         with:
           files: 'build.sh'
 
+      - name: Create output directory
+        run: mkdir ./${{ steps.getdir.outputs.dirname }}
+
       - name: 'Build script does not exist: Copying files from /src to /master/${{ steps.getdir.outputs.dirname }}'
         if: steps.has_build_script.outputs.files_exists != 'true'
-        run: cp -v -r ./src ./master/${{ steps.getdir.outputs.dirname }}
+        run: cp -v -r ./src ./${{ steps.getdir.outputs.dirname }}
 
       - name: 'Build script exists: Running build script and then copying files from /build to /master/${{ steps.getdir.outputs.dirname }}'
         if: steps.has_build_script.outputs.files_exists == 'true'
         run: |
           chmod u+x ./build.sh
           ./build.sh
-          cp -v -r ./build ./master/${{ steps.getdir.outputs.dirname }}
+          cp -v -r ./build ./${{ steps.getdir.outputs.dirname }}
 
       - name: 'Commit built page to master branch'
         run: |
-          cd master
           pwd
-          git status
           git config --global user.name "SReject"
           git config --global user.email 'SReject@users.noreply.github.com'
-          git add .
-          git commit -m 'Changes from #$GITHUB_SHA'
-          git push origin master
+          git status
