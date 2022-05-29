@@ -29,9 +29,9 @@ export default class NoiseControl {
         this.pitch = new Slider({
             title: 'Frequency Modifier',
             description: 'Controls the noise frequency used for successive smothing passes.',
-            minimum: 0,
+            minimum: 1,
             maximum: 10,
-            steps: 100,
+            steps: 90,
             value: 2
         });
         this.persistence = new Slider({

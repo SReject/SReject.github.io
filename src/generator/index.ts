@@ -62,10 +62,10 @@ const initializeSymplex = (
         Number.isInteger(options.iterations) &&
         options.iterations >= 1 &&
 
-        // validate frequency
+        // validate pitch
         typeof options.pitch === 'number' &&
         Number.isFinite(options.pitch) &&
-        options.pitch > 1 &&
+        options.pitch > 0 &&
 
         // validate persistence
         typeof options.persistence === 'number' &&
