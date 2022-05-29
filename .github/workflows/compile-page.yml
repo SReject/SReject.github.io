@@ -35,7 +35,7 @@ jobs:
 
       - name: 'Check if there is a build script'
         id: 'has_build_script'
-        uses: 'actions/file-existence-action@v1'
+        uses: 'andstor/file-existence-action@v1'
         with:
           files: '$GITHUB_WORKSPACE/build.bat'
 
