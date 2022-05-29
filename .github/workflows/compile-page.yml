@@ -42,7 +42,13 @@ jobs:
 
       - name: 'Commit built page to master branch'
         run: |
-          pwd
           git config --global user.name "SReject"
           git config --global user.email 'SReject@users.noreply.github.com'
+
+          git stash push -u -- ./${{ steps.getdir.outputs.dirname}}/*
+
+          git restore .
+
+          git checkout master
+          git stash pop
           git status
