@@ -1,7 +1,6 @@
-name: Compile page for GH Pages
+name: Build page and output to master
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - 'page/**'
@@ -15,8 +14,8 @@ jobs:
       - name: 'Checkout Branch'
         uses: 'actions/checkout@v3'
 
-      - name: 'Get directory name of page'
-        id: 'getpagedir'
+      - name: 'Get directory name for branch'
+        id: 'getdir'
         run: |
           id=$(echo $GITHUB_REF_NAME | cut -d/ -f2)
           echo "::set-output name=dirname::$id"
@@ -24,7 +23,7 @@ jobs:
       - name: Clone master branch
         run: |
           git clone https://github.com/SReject/SReject.github.io.git ./master
-          mkdir ./master/${{ steps.getpagedir.outputs.dirname }}
+          mkdir ./master/${{ steps.getdir.outputs.dirname }}
 
       - name: 'Check if there is a build script'
         id: 'has_build_script'
@@ -32,20 +31,22 @@ jobs:
         with:
           files: 'build.sh'
 
-      - name: 'Build script does not exist: Copy files from /src to page directory'
+      - name: 'Build script does not exist: Copying files from /src to /master/${{ steps.getdir.outputs.dirname }}'
         if: steps.has_build_script.outputs.files_exists != 'true'
-        run: cp -v -r ./src ./master/${{ steps.getpagedir.outputs.dirname }}
+        run: cp -v -r ./src ./master/${{ steps.getdir.outputs.dirname }}
 
-      - name: 'Build script exists: run build script and then copy files from /build to page directory'
+      - name: 'Build script exists: Running build script and then copying files from /build to /master/${{ steps.getdir.outputs.dirname }}'
         if: steps.has_build_script.outputs.files_exists == 'true'
         run: |
           chmod u+x ./build.sh
           ./build.sh
-          cp -v -r ./build ./master/${{ steps.getpagedir.outputs.dirname }}
+          cp -v -r ./build ./master/${{ steps.getdir.outputs.dirname }}
 
       - name: 'Commit built page to master branch'
         run: |
           cd master
+          pwd
+          git status
           git config --global user.name "SReject"
           git config --global user.email 'SReject@users.noreply.github.com'
           git add .
