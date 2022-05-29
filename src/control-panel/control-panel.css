@@ -1,0 +1,24 @@
+#control-panel {
+    position: relative;
+
+    width: 320px;
+
+    background-color: rgb(37, 37, 40);
+    border-right: 1px solid rgb(0, 127, 212);
+    /* overflow-y: scroll; */
+
+    padding-bottom: 5rem;
+}
+
+#control-panel > .generate {
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    padding: 1em 2em;
+    width: 319px;
+    background-color: rgb(35,35,35);
+    border-top: 1px solid rgb(0, 127, 212);
+}
+#control-panel > .generate > button {
+    width: 100%;
+}
