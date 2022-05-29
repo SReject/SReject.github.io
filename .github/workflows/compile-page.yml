@@ -21,17 +21,10 @@ jobs:
           id=$(echo $GITHUB_REF_NAME | cut -d/ -f2)
           echo "::set-output name=dirname::$id"
 
-      - name: 'Create directory for master branch'
-        run: mkdir $GITHUB_WORKSPACE/master
-
-      - name: 'Checkout master branch'
-        uses: 'actions/checkout@v3'
-        with:
-          ref: 'master'
-          path: 'master'
-
-      - name: 'Create page directory in master branch'
-        run: mkdir ./master/${{ steps.getpagedir.outputs.dirname }}
+      - name: Clone master branch
+        run: |
+          git clone https://github.com/SReject/SReject.github.io.git ./master
+          mkdir ./master/${{ steps.getpagedir.outputs.dirname }}
 
       - name: 'Check if there is a build script'
         id: 'has_build_script'
@@ -55,6 +48,6 @@ jobs:
           cd master
           git config --global user.name "SReject"
           git config --global user.email 'SReject@users.noreply.github.com'
-          git add --all
+          git add .
           git commit -m 'Changes from #$GITHUB_SHA'
           git push origin master
