@@ -34,14 +34,14 @@ jobs:
 
       - name: 'Build script does not exist: Copy files from /src to page directory'
         if: steps.has_build_script.outputs.files_exists != 'true'
-        run: cp -r ./src ./master/${{ steps.getpagedir.outputs.dirname }}
+        run: cp -v -r ./src ./master/${{ steps.getpagedir.outputs.dirname }}
 
       - name: 'Build script exists: run build script and then copy files from /build to page directory'
         if: steps.has_build_script.outputs.files_exists == 'true'
         run: |
           chmod u+x ./build.sh
           ./build.sh
-          cp -r ./build ./master/${{ steps.getpagedir.outputs.dirname }}
+          cp -v -r ./build ./master/${{ steps.getpagedir.outputs.dirname }}
 
       - name: 'Commit built page to master branch'
         run: |
