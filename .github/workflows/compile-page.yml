@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: 'Checkout Branch'
         uses: 'actions/checkout@v3'
+        with:
+          featch-depth: 0
 
       - name: 'Get directory name for branch'
         id: 'getdir'
