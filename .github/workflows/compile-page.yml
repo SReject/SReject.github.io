@@ -37,7 +37,7 @@ jobs:
         id: 'has_build_script'
         uses: 'andstor/file-existence-action@v1'
         with:
-          files: 'build.bat'
+          files: 'build.sh'
 
       - name: 'Build script does not exist: Copy files from /src to page directory'
         if: steps.has_build_script.outputs.files_exists != 'true'
@@ -47,7 +47,7 @@ jobs:
         if: steps.has_build_script.outputs.files_exists == 'true'
         run: |
           mkdir ./build
-          build.bat
+          ./build.sh
           cp -r ./build ./master/${{ steps.getpagedir.outputs.dirname }}
 
       - name: 'Commit built page to master branch'
