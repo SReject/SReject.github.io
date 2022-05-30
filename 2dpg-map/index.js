@@ -1015,28 +1015,29 @@ const control_panel_1 = __importStar(__webpack_require__(/*! ./control-panel/ */
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
 const generateMap = (settings) => {
-    const waterAltitude = settings.water.altitude;
-    const deepAltitude = waterAltitude * settings.water.depthDelta;
-    const beachAltitude = (1 - waterAltitude) * settings.water.beachDelta + waterAltitude;
+    const waterDelta = settings.water.altitude;
+    const deepDelta = waterDelta * settings.water.depthDelta;
+    const beachDelta = (1 - waterDelta) * settings.water.beachDelta + waterDelta;
     const map = new generator_1.default({ chunkSize: 1, ...settings });
-    let x = 0;
+    let x = 0, logged = false;
     while (x < 800) {
         let y = 0;
         while (y < 800) {
             const tile = map.getTile(x, y);
             const transX = x;
             const transY = 799 - y;
-            if (tile.height <= deepAltitude) { // deep water
+            let { height: heightDelta } = tile;
+            if (heightDelta <= deepDelta) { // deep water
                 ctx.fillStyle = `rgb(0,100,200)`;
             }
-            else if (tile.height <= waterAltitude) { // water
+            else if (heightDelta <= waterDelta) { // water
                 ctx.fillStyle = `rgb(0,128,255)`;
             }
-            else if (tile.height <= beachAltitude) { // beach
+            else if (heightDelta <= beachDelta) { // beach
                 ctx.fillStyle = `rgb(255, 255, 192)`;
             }
             else { // land
-                const heightDelta = (1 - beachAltitude) * (tile.height - beachAltitude) + beachAltitude;
+                heightDelta = (heightDelta - beachDelta) / (1 - beachDelta);
                 const val = Math.floor(255 * heightDelta);
                 ctx.fillStyle = `rgb(0,${val},0)`;
             }
