@@ -1,0 +1,148 @@
+/*!****************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./src/styles/index.css ***!
+  \****************************************************************************************************/
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-width: 1280px;
+    min-height: 720px;
+    width: 100%;
+    height: 100%;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: rgb(160, 160, 160);
+}
+
+.wrapper {
+    min-width: 100%;
+    min-height: 100%;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+.wrapper>#control-panel {
+    flex: none;
+    min-height: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.wrapper>.content {
+    flex: 1 1 auto;
+    background-color: rgb(30, 30, 30);
+}
+/*!*******************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./src/control-panel/control-panel.css ***!
+  \*******************************************************************************************************************/
+#control-panel {
+    position: relative;
+
+    width: 320px;
+
+    background-color: rgb(37, 37, 40);
+    border-right: 1px solid rgb(0, 127, 212);
+    /* overflow-y: scroll; */
+
+    padding-bottom: 5rem;
+}
+
+#control-panel > .generate {
+    box-sizing: border-box;
+    position: fixed;
+    bottom: 0;
+    padding: 1em 2em;
+    width: 319px;
+    background-color: rgb(35,35,35);
+    border-top: 1px solid rgb(0, 127, 212);
+}
+#control-panel > .generate > button {
+    width: 100%;
+}
+
+/*!****************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./src/components/slider/slider.css ***!
+  \****************************************************************************************************************/
+.slider-wrapper:not(:last-child) {
+    margin-bottom: 0.5em;
+}
+
+.slider-wrapper>.slider-title-wrapper {
+    display: flex;
+    align-items: baseline;
+}
+
+.slider-wrapper>.slider-title-wrapper>.slider-title {
+    font-size: 1rem;
+    flex: 1 1 auto;
+    color: rgb(220, 220, 225);
+}
+
+.slider-wrapper>.slider-title-wrapper>.slider-value {
+    flex: none;
+    width: 5em;
+    text-align: right;
+}
+
+.slider-wrapper>.slider-description {
+    box-sizing: border-box;
+    padding: 0.25rem 0.5em 0.5em 0.5em;
+}
+
+.slider-wrapper>.slider-container {
+    box-sizing: border-box;
+    padding: 0rem 0.5rem;
+}
+
+.slider-wrapper>.slider-container>input[type="range"].slider {
+    width: 100%;
+}
+/*!**************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./src/components/group/group.css ***!
+  \**************************************************************************************************************/
+.group-wrapper:not(:last-child) {
+    border-bottom: 1px solid rgb(0, 127, 212);
+}
+
+.group-wrapper > .group-head {
+    font-size: 1.1rem;
+    color: rgb(108, 196, 255);
+    user-select: none;
+    padding: 0.5em;
+}
+.group-wrapper.collapsable>.group-head {
+    cursor: pointer;
+}
+
+.group-wrapper.collapsable>.group-head:hover {
+    color: white;
+}
+
+.group-wrapper > .group-content {
+    box-sizing: border-box;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+.group-wrapper.collapsable>.group-content {
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+    overflow-y: hidden;
+    height: 0px;
+    opacity: 0;
+}
+.group-wrapper.collapsable.expand>.group-content {
+    height: auto;
+    overflow-y: auto;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+
+    opacity: 1;
+    transition-property: opacity;
+    transition-delay: 0s;
+    transition-duration: 0.5s, 0.5s;
+}
+
+/*# sourceMappingURL=main.css.map*/
