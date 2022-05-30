@@ -568,7 +568,7 @@ class WaterLine {
             value: 0.05
         });
         this.container = new components_1.Group({
-            title: 'Water and Beanches',
+            title: 'Water and Beaches',
             collapsable: true,
             children: [
                 this.altitude.element,
