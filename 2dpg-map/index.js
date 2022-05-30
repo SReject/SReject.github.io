@@ -1028,17 +1028,24 @@ const generateMap = (settings) => {
             const transY = 799 - y;
             let { height: heightDelta } = tile;
             if (heightDelta <= deepDelta) { // deep water
-                ctx.fillStyle = `rgb(0,100,200)`;
+                const green = 100 * (heightDelta / deepDelta);
+                const blue = 200 * (heightDelta / deepDelta);
+                ctx.fillStyle = `rgb(0, ${green}, ${blue})`;
             }
             else if (heightDelta <= waterDelta) { // water
-                ctx.fillStyle = `rgb(0,128,255)`;
+                const green = 128 * (heightDelta / waterDelta);
+                const blue = 255 * (heightDelta / waterDelta);
+                ctx.fillStyle = `rgb(0, ${green}, ${blue})`;
             }
             else if (heightDelta <= beachDelta) { // beach
-                ctx.fillStyle = `rgb(255, 255, 192)`;
+                const redgreen = 255 * (heightDelta / beachDelta);
+                const blue = 192 * (heightDelta / beachDelta);
+                ctx.fillStyle = `rgb(${redgreen},${redgreen},${blue})`;
             }
             else { // land
+                // readjust height delta to account for water
                 heightDelta = (heightDelta - beachDelta) / (1 - beachDelta);
-                const val = Math.floor(255 * heightDelta);
+                const val = Math.floor(191 * heightDelta + 64);
                 ctx.fillStyle = `rgb(0,${val},0)`;
             }
             ctx.fillRect(transX, transY, 1, 1);
