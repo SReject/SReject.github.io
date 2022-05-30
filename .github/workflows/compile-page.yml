@@ -54,5 +54,5 @@ jobs:
           rm -vrf ./${{ steps.getdir.outputs.dirname }}
           git stash pop
           git add .
-          git commit -m "Changes from #$(echo ${GITHUB_SHA} | cut -c1-8"
+          git commit -m "Changes from #$(echo ${GITHUB_SHA} | cut -c1-8)"
           git push origin master
