@@ -23,16 +23,19 @@ const generateMap = (settings: MapSettings) => {
             const transX = x;
             const transY = 799 - y;
 
-            if (tile.height <= deepAltitude) {
+            if (tile.height <= deepAltitude) { // deep water
                 ctx.fillStyle = `rgb(0,100,200)`;
-            } else if (tile.height <= waterAltitude) {
+
+            } else if (tile.height <= waterAltitude) { // water
                 ctx.fillStyle = `rgb(0,128,255)`;
-            } else if (tile.height <= beachAltitude) {
+
+            } else if (tile.height <= beachAltitude) { // beach
                 ctx.fillStyle = `rgb(255, 255, 192)`;
 
-            } else {
-                const val = Math.floor(tile.height * 255);
-                ctx.fillStyle = `rgb(${val},${val},${val})`;
+            } else { // land
+                const heightDelta = (1 - beachAltitude) * (tile.height - beachAltitude) + beachAltitude;
+                const val = Math.floor(255 * heightDelta);
+                ctx.fillStyle = `rgb(0,${val},0)`;
             }
             ctx.fillRect(transX, transY, 1, 1);
             y += 1;
