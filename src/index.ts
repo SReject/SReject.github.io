@@ -36,7 +36,6 @@ const generateMap = (settings: MapSettings) => {
                 ctx.fillStyle = `rgb(255, 255, 192)`;
 
             } else {
-                //const val = 255 - Math.floor(tile.height * 255);
                 const val = Math.floor(tile.height * 255);
                 ctx.fillStyle = `rgb(${val},${val},${val})`;
             }
