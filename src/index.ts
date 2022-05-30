@@ -23,15 +23,10 @@ const generateMap = (settings: MapSettings) => {
             const transX = x;
             const transY = 799 - y;
 
-            // deep water
             if (tile.height <= deepAltitude) {
                 ctx.fillStyle = `rgb(0,100,200)`;
-
-                // shallow water
             } else if (tile.height <= waterAltitude) {
                 ctx.fillStyle = `rgb(0,128,255)`;
-
-                // beanch
             } else if (tile.height <= beachAltitude) {
                 ctx.fillStyle = `rgb(255, 255, 192)`;
 
