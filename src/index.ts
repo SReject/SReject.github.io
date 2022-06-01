@@ -11,7 +11,17 @@ infoBox.updater = (x: number, y: number) => {
     if (map == null || mapSettings == null) {
         return null;
     }
-    return getTileInfo(map, x, y);
+    const waterDelta = mapSettings.water.altitude;
+    return getTileInfo(
+        map,
+        mapSettings.temperature.taper - 1,
+        mapSettings.temperature.taper - 1,
+        waterDelta,
+        waterDelta * mapSettings.water.depthDelta,
+        (1 - waterDelta) * mapSettings.water.beachDelta + waterDelta,
+        x,
+        y
+    );
 };
 
 document.querySelector('.wrapper > .content').appendChild(infoBox.element);
@@ -40,15 +50,16 @@ interface TileInfo {
     color: string[]
 
 }
-const getTileInfo = (map: MapGenerator, x: number, y: number): TileInfo => {
-
-    const temperatureHeightModifier = mapSettings.temperature.taper - 1;
-    const moistureHeightModifier = mapSettings.temperature.taper - 1;
-
-    const waterDelta = mapSettings.water.altitude;
-    const deepDelta = waterDelta * mapSettings.water.depthDelta;
-    const beachDelta = (1 - waterDelta) * mapSettings.water.beachDelta + waterDelta;
-
+const getTileInfo = (
+    map: MapGenerator,
+    temperatureHeightModifier: number,
+    moistureHeightModifier: number,
+    waterDelta: number,
+    deepwaterDelta: number,
+    beachDelta: number,
+    x: number,
+    y: number
+): TileInfo => {
 
     const {
         height: heightDelta,
@@ -63,10 +74,10 @@ const getTileInfo = (map: MapGenerator, x: number, y: number): TileInfo => {
         adjustedTemperatureDelta = temperatureDelta,
         adjustedMoistureDelta = moistureDelta;
 
-    if (heightDelta <= deepDelta) {
+    if (heightDelta <= deepwaterDelta) {
         disposition = "deep water";
-        const green = 100 * (heightDelta / deepDelta);
-        const blue = 200 * (heightDelta / deepDelta);
+        const green = 100 * (heightDelta / deepwaterDelta);
+        const blue = 200 * (heightDelta / deepwaterDelta);
         color = [`rgb(0, ${green}, ${blue})`];
 
     } else if (heightDelta <= waterDelta) {
@@ -127,11 +138,27 @@ const generateMap = (settings: MapSettings) => {
     mapSettings = settings;
     map = new MapGenerator({ chunkSize: 1, ...settings });
 
+    const waterDelta = mapSettings.water.altitude;
+    const deepDelta = waterDelta * mapSettings.water.depthDelta;
+    const beachDelta = (1 - waterDelta) * mapSettings.water.beachDelta + waterDelta;
+
+    const getInfo = getTileInfo.bind(
+        null,
+        map,
+        // height-temp modifier
+        mapSettings.temperature.taper - 1,
+        // height-moisture modifier
+        mapSettings.moisture.taper - 1,
+        waterDelta,
+        deepDelta,
+        beachDelta
+    );
+
     let x = 0;
     while (x < 800) {
         let y = 0;
         while (y < 800) {
-            const tileInfo = getTileInfo(map, x, y);
+            const tileInfo = getInfo(x, y);
             const transX = x;
             const transY = 799 - y;
             tileInfo.color.forEach(color => {
@@ -146,4 +173,13 @@ const generateMap = (settings: MapSettings) => {
 };
 
 setGenerateFn(generateMap);
-generateMap(getMapSettings());
+
+if (document.readyState === "complete") {
+    generateMap(getMapSettings());
+} else {
+    document.addEventListener('readystatechange', () => {
+        if (document.readyState === "complete") {
+            generateMap(getMapSettings());
+        }
+    });
+}
