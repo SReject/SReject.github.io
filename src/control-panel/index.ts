@@ -1,6 +1,6 @@
 import "./control-panel.css";
 
-import NoiseControl from "./noise-control/";
+import { default as NoiseControl, NoiseControlWithTapering, SimplexOptionsWithTaper } from "./noise-control/";
 import * as mapSeed from './map-seed/';
 
 import { default as waterLine, WaterLineSettings } from './water-line/water-line';
@@ -13,8 +13,8 @@ import { SimplexOptions } from "src/generator";
 export interface MapSettings {
     seed: string | number;
     height: SimplexOptions;
-    temperature: SimplexOptions;
-    moisture: SimplexOptions;
+    temperature: SimplexOptionsWithTaper;
+    moisture: SimplexOptionsWithTaper;
     water: WaterLineSettings;
 }
 
@@ -25,8 +25,20 @@ let generate: MapGeneratorFn = (settings: MapSettings) => {
 };
 
 const heightNoise = new NoiseControl('Height Map');
-const temperatureNoise = new NoiseControl('Temperature Map');
-const moistureNoise = new NoiseControl('Moisture Map');
+const temperatureNoise = new NoiseControlWithTapering(
+    'Temperature Map',
+    {
+        title: 'Altitude Modifier',
+        description: 'Controls how altitude will alter temperature'
+    }
+);
+const moistureNoise = new NoiseControlWithTapering(
+    'Moisture Map',
+    {
+        title: 'Altitude Modifier',
+        description: 'Controls how altitude will alter temperature'
+    }
+);
 const create = createWrapper();
 const generateButton = create({
     class: 'generate',

@@ -1,0 +1,28 @@
+#point-info-box {
+    position: absolute;
+    display: none;
+    box-sizing: border-box;
+    padding: 1em;
+    border: 1px solid rgb(0, 127, 212);
+    background-color: rgb(37, 37, 40);
+    z-index: 1000;
+    min-width: 250px;
+}
+
+#point-info-box.show {
+    display: block;
+}
+
+.infobox-listitem {
+    display: flex;
+}
+
+.infobox-listitem>.infobox-listitem-text {
+    font-size: 1.1em;
+    flex: 1 1 auto;
+}
+
+.infobox-listitem>.infobox-listitem-value {
+    flex: 0 0 auto;
+    font-weight: lighter;
+}

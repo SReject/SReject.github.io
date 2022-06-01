@@ -1,5 +1,6 @@
 import { SimplexOptions } from "../../generator";
 import { Slider, Group } from '../../components/';
+import { create } from "domain";
 
 export default class NoiseControl {
     private scale: Slider;
@@ -7,6 +8,7 @@ export default class NoiseControl {
     private pitch: Slider;
     private persistence: Slider;
 
+    protected children: HTMLElement;
     private container: HTMLElement;
 
     constructor(title: string) {
@@ -42,7 +44,8 @@ export default class NoiseControl {
             steps: 199,
             value: 0.45
         });
-        this.container = new Group({
+
+        let ele = new Group({
             title: title,
             collapsable: true,
             children: [
@@ -51,7 +54,10 @@ export default class NoiseControl {
                 this.pitch.element,
                 this.persistence.element
             ]
-        }).element;
+        });
+
+        this.container = ele.element;
+        this.children = ele.content;
     }
     get element() {
         return this.container;
@@ -64,6 +70,40 @@ export default class NoiseControl {
             persistence: this.persistence.value,
             min: 0,
             max: 1
+        }
+    }
+}
+
+interface NoiseControlTaperSettings {
+    title: string;
+    description: string
+};
+export interface SimplexOptionsWithTaper extends SimplexOptions {
+    taper: number
+}
+export class NoiseControlWithTapering extends NoiseControl {
+    private taper: Slider;
+
+    constructor(title: string, taper: NoiseControlTaperSettings) {
+        super(title);
+
+
+        this.taper = new Slider({
+            title: taper.title,
+            description: taper.description,
+            steps: 1000,
+            minimum: 0,
+            maximum: 2,
+            value: 1
+        });
+
+        this.children.appendChild(this.taper.element);
+    }
+    getSettings(): SimplexOptionsWithTaper {
+        let settings = super.getSettings();
+        return {
+            taper: this.taper.value,
+            ...settings
         }
     }
 }
