@@ -6,7 +6,7 @@ body {
     margin: 0;
     padding: 0;
     min-width: 1280px;
-    min-height: 720px;
+    min-height: 800px;
     width: 100%;
     height: 100%;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -31,6 +31,7 @@ body {
 
 .wrapper>.content {
     flex: 1 1 auto;
+    position: relative;
     background-color: rgb(30, 30, 30);
 }
 /*!*******************************************************************************************************************!*\
@@ -143,6 +144,37 @@ body {
     transition-property: opacity;
     transition-delay: 0s;
     transition-duration: 0.5s, 0.5s;
+}
+/*!*****************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./src/components/info-box/index.css ***!
+  \*****************************************************************************************************************/
+#point-info-box {
+    position: absolute;
+    display: none;
+    box-sizing: border-box;
+    padding: 1em;
+    border: 1px solid rgb(0, 127, 212);
+    background-color: rgb(37, 37, 40);
+    z-index: 1000;
+    min-width: 250px;
+}
+
+#point-info-box.show {
+    display: block;
+}
+
+.infobox-listitem {
+    display: flex;
+}
+
+.infobox-listitem>.infobox-listitem-text {
+    font-size: 1.1em;
+    flex: 1 1 auto;
+}
+
+.infobox-listitem>.infobox-listitem-value {
+    flex: 0 0 auto;
+    font-weight: lighter;
 }
 
 /*# sourceMappingURL=main.css.map*/

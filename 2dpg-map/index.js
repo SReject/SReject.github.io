@@ -11,6 +11,16 @@
 
 /***/ }),
 
+/***/ "./src/components/info-box/index.css":
+/*!*******************************************!*\
+  !*** ./src/components/info-box/index.css ***!
+  \*******************************************/
+/***/ (() => {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
 /***/ "./src/components/slider/slider.css":
 /*!******************************************!*\
   !*** ./src/components/slider/slider.css ***!
@@ -249,6 +259,111 @@ exports.Group = group_1.default;
 
 /***/ }),
 
+/***/ "./src/components/info-box/index.ts":
+/*!******************************************!*\
+  !*** ./src/components/info-box/index.ts ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__webpack_require__(/*! ./index.css */ "./src/components/info-box/index.css");
+const create_1 = __importDefault(__webpack_require__(/*! ../helpers/create */ "./src/components/helpers/create.ts"));
+const create = (0, create_1.default)({
+    "prefix": "infobox-"
+});
+const createListItem = (title) => {
+    return create({
+        preclass: ['listitem'],
+        children: [create({ text: `${title}:`, preclass: 'listitem-text' }), create({ preclass: 'listitem-value' })]
+    });
+};
+const toPercentage = (value) => {
+    let str = (value * 100).toString().split('.');
+    if (str[1].length < 2) {
+        str[1] = str[1] + '0'.repeat(2 - str[1].length);
+    }
+    else if (str[1].length > 2 && parseInt(str[1][2], 10) >= 5) {
+        str[1] = str[1][0] + ('' + (parseInt(str[1][1], 10) + 1));
+    }
+    return str[0] + '.' + str[1].substring(0, 2) + '%';
+};
+class InfoBox {
+    constructor(subject) {
+        this.container = create({
+            id: "point-info-box",
+            children: [
+                this.point = createListItem('Position'),
+                this.elevation = createListItem('Elevation'),
+                this.temperature = createListItem('Temperature'),
+                this.humidity = createListItem('Humidity')
+            ]
+        });
+        const onTimeout = () => {
+            if (this.timeout != null) {
+                window.clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+            if (this.mouseX == null || this.mouseY == null || this.updater == null) {
+                this.container.classList.remove('show');
+                return;
+            }
+            const rect = subject.getBoundingClientRect(), pointX = Math.floor((this.mouseX - rect.left) * (subject.width / rect.width)), pointY = Math.floor((this.mouseY - rect.top) * (subject.height / rect.height));
+            const settings = this.updater(pointX, 799 - pointY);
+            if (settings != null) {
+                this.point.children.item(1).textContent = `${settings?.x}, ${settings?.y}`;
+                this.elevation.children.item(1).textContent = toPercentage(settings.adjustedHeightDelta);
+                this.temperature.children.item(1).textContent = toPercentage(settings.adjustedTemperatureDelta);
+                this.humidity.children.item(1).textContent = toPercentage(settings.adjustedMoistureDelta);
+                this.container.style.left = `${this.mouseX - rect.left + 10}px`;
+                this.container.style.top = `${this.mouseY - rect.top + 10}px`;
+                this.container.classList.add('show');
+            }
+            else {
+                this.container.classList.remove('hide');
+            }
+        };
+        subject.addEventListener('mouseenter', (evt) => {
+            if (this.timeout != null) {
+                window.clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+            this.mouseX = evt.clientX;
+            this.mouseY = evt.clientY;
+            this.container.classList.remove('show');
+            this.timeout = window.setTimeout(onTimeout, 100);
+        });
+        subject.addEventListener('mousemove', (evt) => {
+            if (this.timeout != null) {
+                window.clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+            this.mouseX = evt.clientX;
+            this.mouseY = evt.clientY;
+            this.container.classList.remove('show');
+            this.timeout = window.setTimeout(onTimeout, 100);
+        });
+        subject.addEventListener('mouseleave', (evt) => {
+            if (this.timeout != null) {
+                window.clearTimeout(this.timeout);
+                this.timeout = null;
+            }
+            this.container.classList.remove('show');
+        });
+    }
+    get element() {
+        return this.container;
+    }
+}
+exports["default"] = InfoBox;
+
+
+/***/ }),
+
 /***/ "./src/components/slider/slider.ts":
 /*!*****************************************!*\
   !*** ./src/components/slider/slider.ts ***!
@@ -372,7 +487,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.setGenerateFn = void 0;
 __webpack_require__(/*! ./control-panel.css */ "./src/control-panel/control-panel.css");
-const noise_control_1 = __importDefault(__webpack_require__(/*! ./noise-control/ */ "./src/control-panel/noise-control/index.ts"));
+const noise_control_1 = __importStar(__webpack_require__(/*! ./noise-control/ */ "./src/control-panel/noise-control/index.ts"));
 const mapSeed = __importStar(__webpack_require__(/*! ./map-seed/ */ "./src/control-panel/map-seed/index.ts"));
 const water_line_1 = __importDefault(__webpack_require__(/*! ./water-line/water-line */ "./src/control-panel/water-line/water-line.ts"));
 const create_1 = __importDefault(__webpack_require__(/*! ../components/helpers/create */ "./src/components/helpers/create.ts"));
@@ -380,8 +495,14 @@ let generate = (settings) => {
     console.log(settings);
 };
 const heightNoise = new noise_control_1.default('Height Map');
-const temperatureNoise = new noise_control_1.default('Temperature Map');
-const moistureNoise = new noise_control_1.default('Moisture Map');
+const temperatureNoise = new noise_control_1.NoiseControlWithTapering('Temperature Map', {
+    title: 'Altitude Modifier',
+    description: 'Controls how altitude will alter temperature'
+});
+const moistureNoise = new noise_control_1.NoiseControlWithTapering('Moisture Map', {
+    title: 'Altitude Modifier',
+    description: 'Controls how altitude will alter temperature'
+});
 const create = (0, create_1.default)();
 const generateButton = create({
     class: 'generate',
@@ -465,6 +586,7 @@ exports.getSettings = getSettings;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NoiseControlWithTapering = void 0;
 const components_1 = __webpack_require__(/*! ../../components/ */ "./src/components/index.ts");
 class NoiseControl {
     constructor(title) {
@@ -500,7 +622,7 @@ class NoiseControl {
             steps: 199,
             value: 0.45
         });
-        this.container = new components_1.Group({
+        let ele = new components_1.Group({
             title: title,
             collapsable: true,
             children: [
@@ -509,7 +631,9 @@ class NoiseControl {
                 this.pitch.element,
                 this.persistence.element
             ]
-        }).element;
+        });
+        this.container = ele.element;
+        this.children = ele.content;
     }
     get element() {
         return this.container;
@@ -526,6 +650,29 @@ class NoiseControl {
     }
 }
 exports["default"] = NoiseControl;
+;
+class NoiseControlWithTapering extends NoiseControl {
+    constructor(title, taper) {
+        super(title);
+        this.taper = new components_1.Slider({
+            title: taper.title,
+            description: taper.description,
+            steps: 1000,
+            minimum: 0,
+            maximum: 2,
+            value: 1
+        });
+        this.children.appendChild(this.taper.element);
+    }
+    getSettings() {
+        let settings = super.getSettings();
+        return {
+            taper: this.taper.value,
+            ...settings
+        };
+    }
+}
+exports.NoiseControlWithTapering = NoiseControlWithTapering;
 
 
 /***/ }),
@@ -1012,43 +1159,94 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 __webpack_require__(/*! ./styles/index.css */ "./src/styles/index.css");
 const generator_1 = __importDefault(__webpack_require__(/*! ./generator/ */ "./src/generator/index.ts"));
 const control_panel_1 = __importStar(__webpack_require__(/*! ./control-panel/ */ "./src/control-panel/index.ts"));
+const info_box_1 = __importDefault(__webpack_require__(/*! ./components/info-box */ "./src/components/info-box/index.ts"));
 const canvas = document.querySelector('canvas');
+const infoBox = new info_box_1.default(canvas);
+infoBox.updater = (x, y) => {
+    if (map == null || mapSettings == null) {
+        return null;
+    }
+    return getTileInfo(map, x, y);
+};
+document.querySelector('.wrapper > .content').appendChild(infoBox.element);
 const ctx = canvas.getContext('2d');
+const minmax = (min, value, max) => (value <= min ? min :
+    value >= max ? max :
+        value);
+const getTileInfo = (map, x, y) => {
+    const temperatureHeightModifier = mapSettings.temperature.taper - 1;
+    const moistureHeightModifier = mapSettings.temperature.taper - 1;
+    const waterDelta = mapSettings.water.altitude;
+    const deepDelta = waterDelta * mapSettings.water.depthDelta;
+    const beachDelta = (1 - waterDelta) * mapSettings.water.beachDelta + waterDelta;
+    const { height: heightDelta, temperature: temperatureDelta, moisture: moistureDelta } = map.getTile(x, y);
+    let disposition, color = [], adjustedHeightDelta = heightDelta, adjustedTemperatureDelta = temperatureDelta, adjustedMoistureDelta = moistureDelta;
+    if (heightDelta <= deepDelta) {
+        disposition = "deep water";
+        const green = 100 * (heightDelta / deepDelta);
+        const blue = 200 * (heightDelta / deepDelta);
+        color = [`rgb(0, ${green}, ${blue})`];
+    }
+    else if (heightDelta <= waterDelta) {
+        disposition = "shallow water";
+        const green = 128 * (heightDelta / waterDelta);
+        const blue = 255 * (heightDelta / waterDelta);
+        color = [`rgb(0, ${green}, ${blue})`];
+    }
+    else if (heightDelta <= beachDelta) {
+        disposition = "beach";
+        const redgreen = 255 * (heightDelta / beachDelta);
+        const blue = 192 * (heightDelta / beachDelta);
+        color = [`rgb(${redgreen},${redgreen},${blue})`];
+    }
+    else {
+        disposition = "land";
+        // readjust height delta to account for water
+        adjustedHeightDelta = (heightDelta - beachDelta) / (1 - beachDelta);
+        // get base color
+        const val = Math.floor(191 * adjustedHeightDelta + 64);
+        color = [`rgb(0,${val},0)`];
+        // Get adjusted temperature delta for the tile
+        adjustedTemperatureDelta = minmax(0, temperatureDelta * ((1 + adjustedHeightDelta) ** temperatureHeightModifier), 1);
+        // Get adjusted temperature delta for the tile
+        adjustedMoistureDelta = minmax(0, moistureDelta * ((1 + adjustedHeightDelta) ** moistureHeightModifier), 1);
+        if (adjustedTemperatureDelta < 0.5) {
+            let n = (0.5 - adjustedTemperatureDelta) / 0.5;
+            color.push(`rgba(0,${val},255,${n})`);
+        }
+        else if (adjustedTemperatureDelta > 0.5) {
+            let n = (adjustedTemperatureDelta - 0.5) / 0.5;
+            color.push(`rgba(255,${val},0,${n})`);
+        }
+    }
+    return {
+        x,
+        y,
+        disposition,
+        heightDelta,
+        adjustedHeightDelta,
+        temperatureDelta,
+        adjustedTemperatureDelta,
+        moistureDelta,
+        adjustedMoistureDelta,
+        color
+    };
+};
+let map, mapSettings;
 const generateMap = (settings) => {
-    const waterDelta = settings.water.altitude;
-    const deepDelta = waterDelta * settings.water.depthDelta;
-    const beachDelta = (1 - waterDelta) * settings.water.beachDelta + waterDelta;
-    const map = new generator_1.default({ chunkSize: 1, ...settings });
-    let x = 0, logged = false;
+    mapSettings = settings;
+    map = new generator_1.default({ chunkSize: 1, ...settings });
+    let x = 0;
     while (x < 800) {
         let y = 0;
         while (y < 800) {
-            const tile = map.getTile(x, y);
+            const tileInfo = getTileInfo(map, x, y);
             const transX = x;
             const transY = 799 - y;
-            let { height: heightDelta } = tile;
-            if (heightDelta <= deepDelta) { // deep water
-                const green = 100 * (heightDelta / deepDelta);
-                const blue = 200 * (heightDelta / deepDelta);
-                ctx.fillStyle = `rgb(0, ${green}, ${blue})`;
-            }
-            else if (heightDelta <= waterDelta) { // water
-                const green = 128 * (heightDelta / waterDelta);
-                const blue = 255 * (heightDelta / waterDelta);
-                ctx.fillStyle = `rgb(0, ${green}, ${blue})`;
-            }
-            else if (heightDelta <= beachDelta) { // beach
-                const redgreen = 255 * (heightDelta / beachDelta);
-                const blue = 192 * (heightDelta / beachDelta);
-                ctx.fillStyle = `rgb(${redgreen},${redgreen},${blue})`;
-            }
-            else { // land
-                // readjust height delta to account for water
-                heightDelta = (heightDelta - beachDelta) / (1 - beachDelta);
-                const val = Math.floor(191 * heightDelta + 64);
-                ctx.fillStyle = `rgb(0,${val},0)`;
-            }
-            ctx.fillRect(transX, transY, 1, 1);
+            tileInfo.color.forEach(color => {
+                ctx.fillStyle = color;
+                ctx.fillRect(transX, transY, 1, 1);
+            });
             y += 1;
         }
         x += 1;
