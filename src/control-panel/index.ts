@@ -36,7 +36,7 @@ const moistureNoise = new NoiseControlWithTapering(
     'Moisture Map',
     {
         title: 'Altitude Modifier',
-        description: 'Controls how altitude will alter temperature'
+        description: 'Controls how altitude will alter moisture'
     }
 );
 const create = createWrapper();
