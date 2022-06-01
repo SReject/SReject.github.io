@@ -503,7 +503,7 @@ const temperatureNoise = new noise_control_1.NoiseControlWithTapering('Temperatu
 });
 const moistureNoise = new noise_control_1.NoiseControlWithTapering('Moisture Map', {
     title: 'Altitude Modifier',
-    description: 'Controls how altitude will alter temperature'
+    description: 'Controls how altitude will alter moisture'
 });
 const create = (0, create_1.default)();
 const generateButton = create({
