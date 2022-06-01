@@ -37,6 +37,7 @@ const toPercentage = (value: number): string => {
 export default class InfoBox {
     private container: HTMLElement;
     private point: HTMLElement;
+    private disposition: HTMLElement;
     private elevation: HTMLElement;
     private temperature: HTMLElement;
     private humidity: HTMLElement;
@@ -53,6 +54,7 @@ export default class InfoBox {
             id: "point-info-box",
             children: [
                 this.point = createListItem('Position'),
+                this.disposition = createListItem('Disposition'),
                 this.elevation = createListItem('Elevation'),
                 this.temperature = createListItem('Temperature'),
                 this.humidity = createListItem('Humidity')
@@ -77,6 +79,7 @@ export default class InfoBox {
             const settings = this.updater(pointX, 799 - pointY);
             if (settings != null) {
                 this.point.children.item(1).textContent = `${settings?.x}, ${settings?.y}`;
+                this.disposition.children.item(1).textContent = settings.disposition;
                 this.elevation.children.item(1).textContent = toPercentage(settings.adjustedHeightDelta);
                 this.temperature.children.item(1).textContent = toPercentage(settings.adjustedTemperatureDelta);
                 this.humidity.children.item(1).textContent = toPercentage(settings.adjustedMoistureDelta);
